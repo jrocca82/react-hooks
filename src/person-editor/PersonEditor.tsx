@@ -1,59 +1,48 @@
-import React, { ReactElement, useState, useEffect } from "react";
-import localforage from "localforage";
-import type { Person } from "../types/person";
+import React, { ReactElement, useRef, useEffect } from "react";
 
-import { LabeledInput, Loading } from "../components"
-import { initialPerson } from "../utils"
+import { LabeledInput, Loading } from "../components";
+import { initialPerson } from "../utils";
+import usePerson from "./hooks/usePerson";
 
-export function PersonEditor(): ReactElement {
-  const [person, setPerson] = useState<Person | null>(null);
-
- const savePerson = (person: Person | null) => {
-    console.log("saving", person);
-    localforage.setItem("person", person);
-  }
+export const PersonEditor = () => {
+  const [person, setPerson] = usePerson(initialPerson);
+  const input = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const getPerson = async() => {
-      const person = await localforage.getItem<Person>("person");
-      setPerson(person ?? initialPerson)
-    };
-
-    getPerson();
+    setTimeout(() => {
+      input.current?.focus();
+    }, 5000)
   }, []);
 
-  useEffect(() => {
-    savePerson(person)
-  }, [person]);
-
   if (!person) {
-    return <Loading/>
+    return <Loading />
   }
 
   return (
     <form
       className="person-editor"
       onSubmit={(e) => {
-        e.preventDefault()
-        alert(`Submitting\n${JSON.stringify(person, null, 2)}`)
+        e.preventDefault();
+        alert(`Submitting\n${JSON.stringify(person, null, 2)}`);
       }}
     >
       <h2>Person Editor</h2>
       <LabeledInput
+        ref={input}
         label="Firstname:"
         value={person.firstname}
         onChange={(e) => {
-          setPerson(person => ({
+          setPerson((person) => ({
             ...person!,
-            firstname: e.target.value
-          }));
-          if(e.target.value === "Ford") {
-            setPerson(person => ({
+            firstname: e.target.value,
+          }))
+          if (e.target.value === "Ford") {
+            setPerson((person) => ({
               ...person!,
               surname: "Prefect",
               address: "Outer Space",
               email: "",
-              phone: ""
+              phone: "",
             }))
           }
         }}
@@ -63,7 +52,7 @@ export function PersonEditor(): ReactElement {
         value={person.surname}
         onChange={(e) => {
           const newPerson = { ...person, surname: e.target.value }
-          setPerson(person)
+          setPerson(newPerson)
         }}
       />
       <LabeledInput
@@ -71,7 +60,7 @@ export function PersonEditor(): ReactElement {
         value={person.email}
         onChange={(e) => {
           const newPerson = { ...person, email: e.target.value }
-          setPerson(person)
+          setPerson(newPerson)
         }}
       />
       <LabeledInput
@@ -79,7 +68,7 @@ export function PersonEditor(): ReactElement {
         value={person.address}
         onChange={(e) => {
           const newPerson = { ...person, address: e.target.value }
-          setPerson(person)
+          setPerson(newPerson)
         }}
       />
       <LabeledInput
@@ -87,7 +76,7 @@ export function PersonEditor(): ReactElement {
         value={person.phone}
         onChange={(e) => {
           const newPerson = { ...person, phone: e.target.value }
-          setPerson(person)
+          setPerson(newPerson)
         }}
       />
       <hr />
