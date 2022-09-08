@@ -1,18 +1,24 @@
-import React, { ReactElement, useRef, useEffect } from "react";
+import React, { ReactElement, useRef, useEffect } from "react"
 
-import { LabeledInput, Loading } from "../components";
-import { initialPerson } from "../utils";
-import usePerson from "./hooks/usePerson";
+import { LabeledInput, Loading } from "../components"
+import { initialPerson } from "../utils"
+import usePerson from "./hooks/usePerson"
 
 export const PersonEditor = () => {
-  const [person, setPerson] = usePerson(initialPerson);
-  const input = useRef<HTMLInputElement>(null);
+  const [
+    person,
+    setProperty,
+    setProperties,
+    { isDirty, isValid },
+    { firstname, surname },
+  ] = usePerson(initialPerson)
+  const input = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     setTimeout(() => {
-      input.current?.focus();
+      input.current?.focus()
     }, 5000)
-  }, []);
+  }, [])
 
   if (!person) {
     return <Loading />
@@ -22,8 +28,8 @@ export const PersonEditor = () => {
     <form
       className="person-editor"
       onSubmit={(e) => {
-        e.preventDefault();
-        alert(`Submitting\n${JSON.stringify(person, null, 2)}`);
+        e.preventDefault()
+        alert(`Submitting\n${JSON.stringify(person, null, 2)}`)
       }}
     >
       <h2>Person Editor</h2>
@@ -32,18 +38,14 @@ export const PersonEditor = () => {
         label="Firstname:"
         value={person.firstname}
         onChange={(e) => {
-          setPerson((person) => ({
-            ...person!,
-            firstname: e.target.value,
-          }))
+          setProperty("firstname", e.target.value)
           if (e.target.value === "Ford") {
-            setPerson((person) => ({
-              ...person!,
+            setProperties({
               surname: "Prefect",
               address: "Outer Space",
               email: "",
               phone: "",
-            }))
+            })
           }
         }}
       />
@@ -52,7 +54,7 @@ export const PersonEditor = () => {
         value={person.surname}
         onChange={(e) => {
           const newPerson = { ...person, surname: e.target.value }
-          setPerson(newPerson)
+          setProperty("surname", e.target.value)
         }}
       />
       <LabeledInput
@@ -60,7 +62,7 @@ export const PersonEditor = () => {
         value={person.email}
         onChange={(e) => {
           const newPerson = { ...person, email: e.target.value }
-          setPerson(newPerson)
+          setProperty("email", e.target.value)
         }}
       />
       <LabeledInput
@@ -68,7 +70,7 @@ export const PersonEditor = () => {
         value={person.address}
         onChange={(e) => {
           const newPerson = { ...person, address: e.target.value }
-          setPerson(newPerson)
+          setProperty("address", e.target.value)
         }}
       />
       <LabeledInput
@@ -76,12 +78,16 @@ export const PersonEditor = () => {
         value={person.phone}
         onChange={(e) => {
           const newPerson = { ...person, phone: e.target.value }
-          setPerson(newPerson)
+          setProperty("phone", e.target.value)
         }}
       />
       <hr />
       <div className="btn-group">
-        <button type="submit" className="btn btn-primary">
+        <button
+          type="submit"
+          className="btn btn-primary"
+          disabled={!isDirty || !isValid}
+        >
           Submit
         </button>
       </div>

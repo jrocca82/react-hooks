@@ -1,16 +1,16 @@
-import { MutableRefObject, useRef, useLayoutEffect } from "react";
+import { MutableRefObject, useRef, useLayoutEffect } from "react"
 
 const useIsMounted = (): Readonly<MutableRefObject<boolean>> => {
-    const isMounted = useRef(false);
+  const isMounted = useRef(false)
 
-    useLayoutEffect(() => {
-        isMounted.current = true;
+  useLayoutEffect(() => {
+    isMounted.current = true
 
-        return () => {
-            isMounted.current = false;
-        }
-    }, []);
-    return isMounted;
-};
+    return () => {
+      isMounted.current = false
+    }
+  }, [])
+  return isMounted
+}
 
-export default useIsMounted;
+export default useIsMounted

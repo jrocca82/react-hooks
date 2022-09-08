@@ -1,11 +1,11 @@
-import {useEffect} from "react";
+import { useEffect } from "react"
 
 const useDebounce = (fn: () => void, timeout: number): void => {
-    useEffect(() => {
-        const handle = setTimeout(fn, timeout);
+  useEffect(() => {
+    const handle = setTimeout(fn, timeout)
 
-        return () => clearTimeout(handle);
-    }, [fn, timeout]);
-};
+    return () => clearTimeout(handle)
+  }, [fn, timeout])
+}
 
-export default useDebounce;
+export default useDebounce
